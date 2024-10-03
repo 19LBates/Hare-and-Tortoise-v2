@@ -10,5 +10,6 @@ namespace Hare_and_Tortoise_v2 {
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
+
     }
 }
