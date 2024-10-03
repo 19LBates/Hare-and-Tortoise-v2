@@ -35,111 +35,120 @@
             outputDescLabel = new Label();
             raceOutputRadioButton = new RadioButton();
             leagueOutputRadioButton = new RadioButton();
+            openFileDialog1 = new OpenFileDialog();
+            programLogRadioButton = new RadioButton();
             ((System.ComponentModel.ISupportInitialize)numberRacesNumUD).BeginInit();
             ((System.ComponentModel.ISupportInitialize)raceDistanceNumUD).BeginInit();
             SuspendLayout();
             // 
             // startRaceButton
             // 
-            startRaceButton.Location = new Point(12, 159);
+            startRaceButton.Location = new Point(10, 119);
+            startRaceButton.Margin = new Padding(3, 2, 3, 2);
             startRaceButton.Name = "startRaceButton";
-            startRaceButton.Size = new Size(94, 29);
-            startRaceButton.TabIndex = 0;
+            startRaceButton.Size = new Size(82, 22);
+            startRaceButton.TabIndex = 4;
             startRaceButton.Text = "Start Races";
             startRaceButton.UseVisualStyleBackColor = true;
             startRaceButton.Click += startRaceButton_Click;
             // 
             // loadFIleButton
             // 
-            loadFIleButton.Location = new Point(12, 12);
+            loadFIleButton.Location = new Point(10, 9);
+            loadFIleButton.Margin = new Padding(3, 2, 3, 2);
             loadFIleButton.Name = "loadFIleButton";
-            loadFIleButton.Size = new Size(94, 29);
-            loadFIleButton.TabIndex = 2;
+            loadFIleButton.Size = new Size(82, 22);
+            loadFIleButton.TabIndex = 0;
             loadFIleButton.Text = "Load File";
             loadFIleButton.UseVisualStyleBackColor = true;
             loadFIleButton.Click += loadFileButton_Click;
             // 
             // resetButton
             // 
-            resetButton.Location = new Point(12, 47);
+            resetButton.Location = new Point(10, 35);
+            resetButton.Margin = new Padding(3, 2, 3, 2);
             resetButton.Name = "resetButton";
-            resetButton.Size = new Size(94, 29);
-            resetButton.TabIndex = 3;
+            resetButton.Size = new Size(82, 22);
+            resetButton.TabIndex = 1;
             resetButton.Text = "Reset";
             resetButton.UseVisualStyleBackColor = true;
             resetButton.Click += resetButton_Click;
             // 
             // numberRacesNumUD
             // 
-            numberRacesNumUD.Location = new Point(86, 126);
+            numberRacesNumUD.Location = new Point(75, 94);
+            numberRacesNumUD.Margin = new Padding(3, 2, 3, 2);
             numberRacesNumUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numberRacesNumUD.Name = "numberRacesNumUD";
-            numberRacesNumUD.Size = new Size(55, 27);
-            numberRacesNumUD.TabIndex = 4;
+            numberRacesNumUD.Size = new Size(48, 23);
+            numberRacesNumUD.TabIndex = 2;
             numberRacesNumUD.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // raceDistanceNumUD
             // 
-            raceDistanceNumUD.Location = new Point(228, 126);
+            raceDistanceNumUD.Location = new Point(200, 94);
+            raceDistanceNumUD.Margin = new Padding(3, 2, 3, 2);
             raceDistanceNumUD.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             raceDistanceNumUD.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             raceDistanceNumUD.Name = "raceDistanceNumUD";
-            raceDistanceNumUD.Size = new Size(72, 27);
-            raceDistanceNumUD.TabIndex = 5;
+            raceDistanceNumUD.Size = new Size(63, 23);
+            raceDistanceNumUD.TabIndex = 3;
             raceDistanceNumUD.Value = new decimal(new int[] { 1000, 0, 0, 0 });
             // 
             // staticRaceLabel1
             // 
             staticRaceLabel1.AutoSize = true;
-            staticRaceLabel1.Location = new Point(12, 128);
+            staticRaceLabel1.Location = new Point(10, 96);
             staticRaceLabel1.Name = "staticRaceLabel1";
-            staticRaceLabel1.Size = new Size(67, 20);
+            staticRaceLabel1.Size = new Size(53, 15);
             staticRaceLabel1.TabIndex = 6;
             staticRaceLabel1.Text = "Simulate";
             // 
             // staticRaceLabel2
             // 
             staticRaceLabel2.AutoSize = true;
-            staticRaceLabel2.Location = new Point(148, 128);
+            staticRaceLabel2.Location = new Point(130, 96);
             staticRaceLabel2.Name = "staticRaceLabel2";
-            staticRaceLabel2.Size = new Size(70, 20);
+            staticRaceLabel2.Size = new Size(55, 15);
             staticRaceLabel2.TabIndex = 7;
             staticRaceLabel2.Text = "race(s) at";
             // 
             // staticRaceLabel3
             // 
             staticRaceLabel3.AutoSize = true;
-            staticRaceLabel3.Location = new Point(306, 128);
+            staticRaceLabel3.Location = new Point(268, 96);
             staticRaceLabel3.Name = "staticRaceLabel3";
-            staticRaceLabel3.Size = new Size(89, 20);
+            staticRaceLabel3.Size = new Size(71, 15);
             staticRaceLabel3.TabIndex = 8;
             staticRaceLabel3.Text = "metres each";
             // 
             // outputList
             // 
             outputList.FormattingEnabled = true;
-            outputList.Location = new Point(440, 47);
+            outputList.ItemHeight = 15;
+            outputList.Location = new Point(385, 35);
+            outputList.Margin = new Padding(3, 2, 3, 2);
             outputList.Name = "outputList";
-            outputList.Size = new Size(382, 464);
+            outputList.Size = new Size(335, 349);
             outputList.TabIndex = 9;
             // 
             // outputDescLabel
             // 
             outputDescLabel.AutoSize = true;
-            outputDescLabel.Location = new Point(440, 16);
+            outputDescLabel.Location = new Point(385, 12);
             outputDescLabel.Name = "outputDescLabel";
-            outputDescLabel.Size = new Size(94, 20);
+            outputDescLabel.Size = new Size(76, 15);
             outputDescLabel.TabIndex = 10;
             outputDescLabel.Text = "Race Output:";
             // 
             // raceOutputRadioButton
             // 
             raceOutputRadioButton.AutoSize = true;
-            raceOutputRadioButton.Location = new Point(841, 49);
+            raceOutputRadioButton.Location = new Point(736, 82);
+            raceOutputRadioButton.Margin = new Padding(3, 2, 3, 2);
             raceOutputRadioButton.Name = "raceOutputRadioButton";
-            raceOutputRadioButton.Size = new Size(112, 24);
-            raceOutputRadioButton.TabIndex = 11;
-            raceOutputRadioButton.TabStop = true;
+            raceOutputRadioButton.Size = new Size(91, 19);
+            raceOutputRadioButton.TabIndex = 7;
             raceOutputRadioButton.Text = "Race Output";
             raceOutputRadioButton.UseVisualStyleBackColor = true;
             raceOutputRadioButton.CheckedChanged += raceOutputRadioButton_CheckedChanged;
@@ -147,19 +156,41 @@
             // leagueOutputRadioButton
             // 
             leagueOutputRadioButton.AutoSize = true;
-            leagueOutputRadioButton.Location = new Point(841, 79);
+            leagueOutputRadioButton.Location = new Point(736, 59);
+            leagueOutputRadioButton.Margin = new Padding(3, 2, 3, 2);
             leagueOutputRadioButton.Name = "leagueOutputRadioButton";
-            leagueOutputRadioButton.Size = new Size(117, 24);
-            leagueOutputRadioButton.TabIndex = 12;
-            leagueOutputRadioButton.TabStop = true;
+            leagueOutputRadioButton.Size = new Size(93, 19);
+            leagueOutputRadioButton.TabIndex = 6;
             leagueOutputRadioButton.Text = "League Table";
             leagueOutputRadioButton.UseVisualStyleBackColor = true;
             // 
+            // openFileDialog1
+            // 
+            openFileDialog1.DefaultExt = "\".txt\"";
+            openFileDialog1.FileName = "openFileDialog1";
+            openFileDialog1.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog1.ReadOnlyChecked = true;
+            openFileDialog1.Title = "Choose File";
+            // 
+            // programLogRadioButton
+            // 
+            programLogRadioButton.AutoSize = true;
+            programLogRadioButton.Checked = true;
+            programLogRadioButton.Location = new Point(736, 35);
+            programLogRadioButton.Margin = new Padding(3, 2, 3, 2);
+            programLogRadioButton.Name = "programLogRadioButton";
+            programLogRadioButton.Size = new Size(94, 19);
+            programLogRadioButton.TabIndex = 5;
+            programLogRadioButton.TabStop = true;
+            programLogRadioButton.Text = "Program Log";
+            programLogRadioButton.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(982, 553);
+            ClientSize = new Size(861, 421);
+            Controls.Add(programLogRadioButton);
             Controls.Add(leagueOutputRadioButton);
             Controls.Add(raceOutputRadioButton);
             Controls.Add(outputDescLabel);
@@ -172,7 +203,8 @@
             Controls.Add(resetButton);
             Controls.Add(loadFIleButton);
             Controls.Add(startRaceButton);
-            MinimumSize = new Size(1000, 600);
+            Margin = new Padding(3, 2, 3, 2);
+            MinimumSize = new Size(877, 460);
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
@@ -196,5 +228,7 @@
         private Label outputDescLabel;
         private RadioButton raceOutputRadioButton;
         private RadioButton leagueOutputRadioButton;
+        private OpenFileDialog openFileDialog1;
+        private RadioButton programLogRadioButton;
     }
 }
