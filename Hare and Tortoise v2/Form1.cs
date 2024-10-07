@@ -1,13 +1,20 @@
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.Pkcs;
+using System.Xml.Linq;
+
 namespace Hare_and_Tortoise_v2 {
     public partial class Form1 : Form {
 
-        private enum LogType {
+        public enum LogType {
             programLog,
             raceOutput,
             leagueTable
         }
 
-        private LogType currentOutputLogType = LogType.programLog;
+        public LogType currentOutputLogType = LogType.programLog;
+
+        private List<Animal> animalList = new List<Animal>();
 
         public Form1() {
             InitializeComponent();
@@ -19,32 +26,67 @@ namespace Hare_and_Tortoise_v2 {
         }
 
         private void startRaceButton_Click(object sender, EventArgs e) {
-            Log("Test", LogType.programLog);
+            Round(animalList);
         }
 
         private void loadFileButton_Click(object sender, EventArgs e) {
             openFileDialog1.ShowDialog();
             string file = openFileDialog1.FileName;
-            List<Animal> animalList = new List<Animal>();
             TryLoadFile(file, out animalList);
         }
+
+
+        private void resetButton_Click(object sender, EventArgs e) {
+            clearButton_Click(this, new EventArgs());
+            programLogRadioButton.Select();
+            ButtonsAfterFileReset();
+        }
+
+        private void programLogRadioButton_CheckedChanged(object sender, EventArgs e) {
+            currentOutputLogType = LogType.programLog;
+            outputDescLabel.Text = "Program Log";
+        }
+        private void raceOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
+            currentOutputLogType = LogType.raceOutput;
+            outputDescLabel.Text = "Race Output";
+        }
+
+        private void leagueOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
+            currentOutputLogType = LogType.leagueTable;
+            outputDescLabel.Text = "League Table";
+        }
+
+        private void clearButton_Click(object sender, EventArgs e) {
+            outputList.Items.Clear();
+            clearButton.Enabled = false;
+        }
+
 
         private bool TryLoadFile(string file, out List<Animal> animalListOut) {
             string fileExt = Path.GetExtension(file);
             animalListOut = new List<Animal>();
 
+            StreamReader streamReader = new StreamReader(file);
+
             try {
-                if (fileExt != ".txt") { throw new Exception("Incorrect file type"); } //Only allows .txt files to be loaded
-                StreamReader streamReader = new StreamReader(file);
+                if (fileExt != ".txt") {  //Only allows .txt files to be loaded
+                    Log("Incorrect file type - please upload a .txt file", LogType.programLog);
+                    throw new Exception("Incorrect file type");
+                }
+
                 string fileContents = streamReader.ReadToEnd();
+
                 Log($"Loading File: {file}", LogType.programLog);
                 animalListOut = CreateAnimalList(fileContents);
                 Log("Finished Loading File", LogType.programLog);
-                loadFileButton.Enabled = false;
-                enableTheButtons();
+
+                streamReader.Close();
+                ButtonsAfterFileLoad();
                 return true;
-            } catch {
-                Log("Error opening file", LogType.programLog);
+            }
+            catch {
+                streamReader.Close();
+                Log("Error opening/reading file", LogType.programLog);
                 return false;
             }
         }
@@ -64,51 +106,36 @@ namespace Hare_and_Tortoise_v2 {
             return animalListToReturn;
         }
 
-        private void resetButton_Click(object sender, EventArgs e) {
-            loadFileButton.Enabled = true;
-            disableTheButtons();
+        private static void Round(List<Animal> animalsToMove) {
+            foreach (Animal animal in animalsToMove) {
+                animal.Move();
+            }
         }
 
-        private void programLogRadioButton_CheckedChanged(object sender, EventArgs e) {
-            currentOutputLogType = LogType.programLog;
-            outputDescLabel.Text = "Program Log";
-        }
-        private void raceOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
-            currentOutputLogType = LogType.raceOutput;
-            outputDescLabel.Text = "Race Output";
-        }
-
-        private void leagueOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
-           //DELETE
-        }
-        private void leagueOutputRadioButton_CheckedChanged_1(object sender, EventArgs e) {
-            currentOutputLogType = LogType.leagueTable;
-            outputDescLabel.Text = "League Table";
-        }
-
-        private void Log(string message, LogType logType) {
+        public void Log(string message, LogType logType) {
             outputList.Items.Add(message);
-            outputList.SelectedIndex = outputList.Items.Count - 1;
+            outputList.SelectedIndex = outputList.Items.Count - 1; //Select the newest item in the list (Auto-Scrolling)
             clearButton.Enabled = true;
         }
 
-        private void clearButton_Click(object sender, EventArgs e) {
-            outputList.Items.Clear();
-            clearButton.Enabled = false;
-        }
-
-        private void enableTheButtons() {
+        private void ButtonsAfterFileLoad() {
+            loadFileButton.Enabled = false;
             resetButton.Enabled = true;
             startRaceButton.Enabled = true;
             numberRacesNumUD.Enabled = true;
             raceDistanceNumUD.Enabled = true;
+            raceOutputRadioButton.Enabled = true;
+            leagueOutputRadioButton.Enabled = true;
         }
 
-        private void disableTheButtons() {
+        private void ButtonsAfterFileReset() {
+            loadFileButton.Enabled = true;
             resetButton.Enabled = false;
             startRaceButton.Enabled = false;
             numberRacesNumUD.Enabled = false;
             raceDistanceNumUD.Enabled = false;
+            raceOutputRadioButton.Enabled = false;
+            leagueOutputRadioButton.Enabled = false;
         }
     }
 
@@ -122,6 +149,8 @@ namespace Hare_and_Tortoise_v2 {
         private int increaseRestChance;
         public int distanceTravelled;
 
+        private Form1 form1 = Application.OpenForms[0] as Form1;
+
         public Animal(string name, int minMoveSpeed, int maxMoveSpeed, int restChance = 0, int baseRestChance = 0, int maxRestChance = 100, int increaseRestChance = 0) {
             this.name = name;
             this.minMoveSpeed = minMoveSpeed;
@@ -132,28 +161,12 @@ namespace Hare_and_Tortoise_v2 {
             this.increaseRestChance = increaseRestChance;
         }
 
-        public void ViewAnimal() {
-            Console.WriteLine($"Name: {name}; Min Speed: {minMoveSpeed}; Max Speed: {maxMoveSpeed}; Rest Chance: {restChance}; " +
-                $"Max Rest Chance: {maxRestChance}; Rest Chance Increase: {increaseRestChance}; Rest Chance after nap: {baseRestChance}");
-        }
-
         public void Move() {
             Random rnd = new Random();
-            if (restChance > 0) {
-                if (restChance >= rnd.Next(1, 101)) {
-                    Console.WriteLine($"Animal: {name}; Distance: {distanceTravelled}; Resting for this round");
-                    restChance = baseRestChance;
-                    return;
-                }
-            }
 
             distanceTravelled += rnd.Next(minMoveSpeed, maxMoveSpeed + 1);
-            Console.WriteLine($"Animal: {name}; Distance: {distanceTravelled}; Rest Chance: {restChance}");
+            form1.Log($"Animal: {name}; Distance: {distanceTravelled}; Rest Chance: {restChance}", Form1.LogType.raceOutput);
 
-            restChance += increaseRestChance;
-            if (restChance > maxRestChance) {
-                restChance = maxRestChance;
-            }
         }
     }
 
