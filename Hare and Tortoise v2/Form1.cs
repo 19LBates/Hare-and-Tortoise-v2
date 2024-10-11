@@ -1,7 +1,11 @@
+using System.Windows.Forms;
+
 namespace Hare_and_Tortoise_v2 {
     public partial class Form1 : Form {
 
-        //A enum for the Log() function, to describe what type of log is being made
+        //A enum for the Log() function
+        //Describes what type of log is being made
+        //Public so that it can be accessed from anywhere
         public enum LogType {
             programLog,
             raceOutput,
@@ -11,6 +15,11 @@ namespace Hare_and_Tortoise_v2 {
         public LogType currentOutputLogType = LogType.programLog;
 
         private List<Animal> animalList = new List<Animal>();
+
+        //Lists to store the different types of logged messages
+        private List<string> programLogList = new List<string>();
+        private List<string> raceOutputList = new List<string>();
+        private List<string> leagueTableList = new List<string>();
 
         public Form1() {
             InitializeComponent();
@@ -27,6 +36,7 @@ namespace Hare_and_Tortoise_v2 {
 
             //TEMPORARY SOLUTION
             Log($"The winner is {animalWinnerList[0].name}", LogType.raceOutput);
+            Log($"The winner is {animalWinnerList[0].name}", LogType.programLog);
         }
 
         //When the 'Load File' button is clicked
@@ -45,18 +55,27 @@ namespace Hare_and_Tortoise_v2 {
 
         //When the Radio Button is changed to 'Program Log'
         private void programLogRadioButton_CheckedChanged(object sender, EventArgs e) {
+            outputList.Items.Clear();
+            foreach (string item in programLogList) {
+                outputList.Items.Add(item);
+            }
             currentOutputLogType = LogType.programLog;
             outputDescLabel.Text = "Program Log";
         }
 
         //When the Radio Button is changed to 'Race Output'
         private void raceOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
+            outputList.Items.Clear();
+            foreach (string item in raceOutputList) {
+                outputList.Items.Add(item);
+            }
             currentOutputLogType = LogType.raceOutput;
             outputDescLabel.Text = "Race Output";
         }
 
         //When the Radio Button is changed to 'League Output'
         private void leagueOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
+            outputList.Items.Clear();
             currentOutputLogType = LogType.leagueTable;
             outputDescLabel.Text = "League Table";
         }
@@ -64,6 +83,9 @@ namespace Hare_and_Tortoise_v2 {
         //When the 'Clear' button is clicked
         private void clearButton_Click(object sender, EventArgs e) {
             outputList.Items.Clear();
+            programLogList.Clear();
+            raceOutputList.Clear();
+            leagueTableList.Clear();
             clearButton.Enabled = false;
         }
 
@@ -190,9 +212,30 @@ namespace Hare_and_Tortoise_v2 {
 
         //Logs a message to display to the user
         //Takes an input of which type of log it is
-        //User can choose which type of logs they wish to see using the radio buttons
+        //Public so that it can be called from anywhere
         public void Log(string message, LogType logType) {
-            outputList.Items.Add(message);
+
+            switch(logType) {
+                case LogType.programLog:
+                    programLogList.Add(message);
+                    if (programLogRadioButton.Checked) {
+                        outputList.Items.Add(message);
+                    }
+                    break;
+                case LogType.raceOutput:
+                    raceOutputList.Add(message);
+                    if (raceOutputRadioButton.Checked) {
+                        outputList.Items.Add(message);
+                    }
+                    break;
+                case LogType.leagueTable:
+                    leagueTableList.Add(message);
+                    if (leagueOutputRadioButton.Checked) {
+                        outputList.Items.Add(message);
+                    }
+                    break;
+            }
+            
             outputList.SelectedIndex = outputList.Items.Count - 1; //Select the newest item in the list (Auto-Scrolling)
             clearButton.Enabled = true;
         }
@@ -238,11 +281,12 @@ namespace Hare_and_Tortoise_v2 {
         private int increaseRestChance;
         public int distanceTravelled;
 
+        //Allows for accessing functions within the Form1{} class
         private Form1 form1 = Application.OpenForms[0] as Form1;
 
         //Constructor function
         //When this function is called, an object of type Animal is created
-        //
+        //Public so that it can be called from anywhere
         public Animal(string name, int minMoveSpeed, int maxMoveSpeed, int restChance = 0, int baseRestChance = 0, int maxRestChance = 100, int increaseRestChance = 0) {
             this.name = name;
             this.minMoveSpeed = minMoveSpeed;
@@ -258,10 +302,8 @@ namespace Hare_and_Tortoise_v2 {
         //Called once for each Animal on each round of a race 
         public void Move() {
             Random rnd = new Random();
-
+            form1.Log($"test", Form1.LogType.raceOutput);
             distanceTravelled += rnd.Next(minMoveSpeed, maxMoveSpeed + 1);
-            //form1.Log($"Animal: {name}; Distance: {distanceTravelled}; Rest Chance: {restChance}", Form1.LogType.raceOutput);
-
         }
     }
 
