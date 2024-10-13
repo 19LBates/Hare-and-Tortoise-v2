@@ -17,13 +17,15 @@ namespace Hare_and_Tortoise_v2 {
         private List<Animal> animalList = new List<Animal>();
 
         //Lists to store the different types of logged messages
-        private List<string> programLogList = new List<string>();
-        private List<string> raceOutputList = new List<string>();
-        private List<string> leagueTableList = new List<string>();
+
 
         public Form1() {
             InitializeComponent();
-            outputList.ScrollAlwaysVisible = true;
+            programLogLstBox.ScrollAlwaysVisible = true;
+            raceOutputLstBox.ScrollAlwaysVisible = true;
+            leagueTableLstBox.ScrollAlwaysVisible = true;
+            raceOutputLstBox.Visible = false;
+            leagueTableLstBox.Visible = false;
         }
 
         private void Form1_Load(object sender, EventArgs e) {
@@ -55,37 +57,44 @@ namespace Hare_and_Tortoise_v2 {
 
         //When the Radio Button is changed to 'Program Log'
         private void programLogRadioButton_CheckedChanged(object sender, EventArgs e) {
-            outputList.Items.Clear();
-            foreach (string item in programLogList) {
-                outputList.Items.Add(item);
-            }
+            programLogLstBox.Visible = true;
+            raceOutputLstBox.Visible = false;
+            leagueTableLstBox.Visible= false;
             currentOutputLogType = LogType.programLog;
             outputDescLabel.Text = "Program Log";
         }
 
         //When the Radio Button is changed to 'Race Output'
         private void raceOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
-            outputList.Items.Clear();
-            foreach (string item in raceOutputList) {
-                outputList.Items.Add(item);
-            }
+            programLogLstBox.Visible = false;
+            raceOutputLstBox.Visible = true;
+            leagueTableLstBox.Visible = false;
             currentOutputLogType = LogType.raceOutput;
             outputDescLabel.Text = "Race Output";
         }
 
         //When the Radio Button is changed to 'League Output'
         private void leagueOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
-            outputList.Items.Clear();
+            programLogLstBox.Visible = false;
+            raceOutputLstBox.Visible = false;
+            leagueTableLstBox.Visible = true;
             currentOutputLogType = LogType.leagueTable;
             outputDescLabel.Text = "League Table";
         }
 
         //When the 'Clear' button is clicked
         private void clearButton_Click(object sender, EventArgs e) {
-            outputList.Items.Clear();
-            programLogList.Clear();
-            raceOutputList.Clear();
-            leagueTableList.Clear();
+            switch(currentOutputLogType) {
+                case LogType.programLog:
+                    programLogLstBox.Items.Clear();
+                    break;
+                case LogType.raceOutput:
+                    raceOutputLstBox.Items.Clear();
+                    break;
+                case LogType.leagueTable:
+                    leagueTableLstBox.Items.Clear();
+                    break;
+            }
             clearButton.Enabled = false;
         }
 
@@ -217,26 +226,23 @@ namespace Hare_and_Tortoise_v2 {
 
             switch(logType) {
                 case LogType.programLog:
-                    programLogList.Add(message);
-                    if (programLogRadioButton.Checked) {
-                        outputList.Items.Add(message);
-                    }
+                    programLogLstBox.Items.Add(message);
                     break;
                 case LogType.raceOutput:
-                    raceOutputList.Add(message);
+                    //raceOutputList.Add(message);
                     if (raceOutputRadioButton.Checked) {
-                        outputList.Items.Add(message);
+                      //  outputList.Items.Add(message);
                     }
                     break;
                 case LogType.leagueTable:
-                    leagueTableList.Add(message);
+                   // leagueTableList.Add(message);
                     if (leagueOutputRadioButton.Checked) {
-                        outputList.Items.Add(message);
+                     //   outputList.Items.Add(message);
                     }
                     break;
             }
             
-            outputList.SelectedIndex = outputList.Items.Count - 1; //Select the newest item in the list (Auto-Scrolling)
+          //  outputList.SelectedIndex = outputList.Items.Count - 1; //Select the newest item in the list (Auto-Scrolling)
             clearButton.Enabled = true;
         }
 
