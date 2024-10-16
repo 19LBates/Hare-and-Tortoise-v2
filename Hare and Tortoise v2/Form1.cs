@@ -35,22 +35,27 @@ namespace Hare_and_Tortoise_v2 {
         //When the 'Start Races' button is clicked
         private void startRaceButton_Click(object sender, EventArgs e) {
             List<Animal> animalWinnerList = Race(animalList);
-
-            //TEMPORARY SOLUTION
-            Log($"The winner is {animalWinnerList[0].name}", LogType.raceOutput);
-            Log($"The winner is {animalWinnerList[0].name}", LogType.programLog);
+            DisplayWinners(animalWinnerList);
+            
         }
 
         //When the 'Load File' button is clicked
         private void loadFileButton_Click(object sender, EventArgs e) {
-            openFileDialog1.ShowDialog();
-            string file = openFileDialog1.FileName;
+            //Open an open file dialog and load the file that the user selects
+            openFileDialog.ShowDialog();
+            string file = openFileDialog.FileName;
             TryLoadFile(file, out animalList);
         }
 
         //When the 'Reset' button is clicked
         private void resetButton_Click(object sender, EventArgs e) {
-            clearButton_Click(this, new EventArgs());
+            //Clear all list boxes
+            programLogLstBox.Items.Clear();
+            raceOutputLstBox.Items.Clear();
+            leagueTableLstBox.Items.Clear();
+            clearButton.Enabled = false;
+
+            //Disable all buttons apart from the 'Load File' button
             programLogRadioButton.Select();
             ButtonsAfterFileReset();
         }
@@ -59,9 +64,17 @@ namespace Hare_and_Tortoise_v2 {
         private void programLogRadioButton_CheckedChanged(object sender, EventArgs e) {
             programLogLstBox.Visible = true;
             raceOutputLstBox.Visible = false;
-            leagueTableLstBox.Visible= false;
+            leagueTableLstBox.Visible = false;
             currentOutputLogType = LogType.programLog;
             outputDescLabel.Text = "Program Log";
+
+            //Enable/Disable 'Clear' button depending on whether or not the list box has any items
+            if (programLogLstBox.Items.Count > 0) {
+                clearButton.Enabled = true;
+            }
+            else {
+                clearButton.Enabled = false;
+            }
         }
 
         //When the Radio Button is changed to 'Race Output'
@@ -71,6 +84,14 @@ namespace Hare_and_Tortoise_v2 {
             leagueTableLstBox.Visible = false;
             currentOutputLogType = LogType.raceOutput;
             outputDescLabel.Text = "Race Output";
+
+            //Enable/Disable 'Clear' button depending on whether or not the list box has any items
+            if (raceOutputLstBox.Items.Count > 0) {
+                clearButton.Enabled = true;
+            }
+            else {
+                clearButton.Enabled = false;
+            }
         }
 
         //When the Radio Button is changed to 'League Output'
@@ -80,11 +101,19 @@ namespace Hare_and_Tortoise_v2 {
             leagueTableLstBox.Visible = true;
             currentOutputLogType = LogType.leagueTable;
             outputDescLabel.Text = "League Table";
+
+            //Enable/Disable 'Clear' button depending on whether or not the list box has any items
+            if (leagueTableLstBox.Items.Count > 0) {
+                clearButton.Enabled = true;
+            }
+            else {
+                clearButton.Enabled = false;
+            }
         }
 
         //When the 'Clear' button is clicked
         private void clearButton_Click(object sender, EventArgs e) {
-            switch(currentOutputLogType) {
+            switch (currentOutputLogType) {
                 case LogType.programLog:
                     programLogLstBox.Items.Clear();
                     break;
@@ -106,8 +135,16 @@ namespace Hare_and_Tortoise_v2 {
             string fileExt = Path.GetExtension(file);
             animalListOut = new List<Animal>();
 
+            //Prevent trying to load files that do not exist
+            if (!File.Exists(file)) {
+                Log("File does not exist!", LogType.programLog);
+                return false;
+            }
+
             StreamReader streamReader = new StreamReader(file);
 
+            //Use a try statement in order to prevent errors from crashing the program
+            //If errors occur, instead display an error message to the user
             try {
                 if (fileExt != ".txt") {  //Only allows .txt files to be loaded
                     Log("Incorrect file type - please upload a .txt file", LogType.programLog);
@@ -124,7 +161,8 @@ namespace Hare_and_Tortoise_v2 {
                 ButtonsAfterFileLoad();
                 return true;
 
-            } catch {
+            }
+            catch {
                 streamReader.Close();
                 Log("Error opening/reading file", LogType.programLog);
                 return false;
@@ -173,7 +211,7 @@ namespace Hare_and_Tortoise_v2 {
         //Determine which Animal(s) won the race
         //Returns a List of all the Animals that won
         //Further decomposition of the Race() function
-        private static List<Animal> DetermineWinner(List<Animal> animalsToCheck) {
+        private static List<Animal> DetermineWinners(List<Animal> animalsToCheck) {
 
             int maxDistance = animalsToCheck[0].distanceTravelled;
             Animal maxAnimal = animalsToCheck[0];
@@ -209,7 +247,7 @@ namespace Hare_and_Tortoise_v2 {
                 Round(animalList);
             }
 
-            animalWinnerList = DetermineWinner(animalList);
+            animalWinnerList = DetermineWinners(animalList);
 
             //Reset each animal's distance to 0 after the race
             foreach (Animal animal in animalList) {
@@ -219,30 +257,60 @@ namespace Hare_and_Tortoise_v2 {
             return animalWinnerList;
         }
 
+        //Show the user the winner(s) of a race
+        //Outputs a different message if there is a draw between 2 or more animals
+        //Further decomposition of the Race() function
+        private void DisplayWinners(List<Animal> winnerList) {
+            if (winnerList.Count == 1) {
+                Log($"The winner is {winnerList[0].name}", LogType.programLog);
+                Log($"The winner is {winnerList[0].name}", LogType.raceOutput);
+                return;
+            }
+
+            //Draw with 2 or more animals
+            Log($"There was a draw!", LogType.programLog);
+            Log($"There was a draw!", LogType.raceOutput);
+            foreach (Animal animal in winnerList) {
+                Log($"One of the winners is {animal.name}", LogType.programLog);
+                Log($"One of the winners is {animal.name}", LogType.raceOutput);
+            }
+        }
+
         //Logs a message to display to the user
         //Takes an input of which type of log it is
         //Public so that it can be called from anywhere
         public void Log(string message, LogType logType) {
 
-            switch(logType) {
+            switch (logType) {
                 case LogType.programLog:
                     programLogLstBox.Items.Add(message);
-                    break;
-                case LogType.raceOutput:
-                    //raceOutputList.Add(message);
-                    if (raceOutputRadioButton.Checked) {
-                      //  outputList.Items.Add(message);
+                    //Automaticaly scroll if the 'Auto-Scroll' box is checked
+                    if (autoScrollChkBox.Checked) {
+                        programLogLstBox.SelectedIndex = programLogLstBox.Items.Count - 1;
+
                     }
                     break;
+
+                case LogType.raceOutput:
+                    raceOutputLstBox.Items.Add(message);
+                    //Automaticaly scroll if the 'Auto-Scroll' box is checked
+                    if (autoScrollChkBox.Checked) {
+                        raceOutputLstBox.SelectedIndex = raceOutputLstBox.Items.Count - 1;
+
+                    }
+                    break;
+
                 case LogType.leagueTable:
-                   // leagueTableList.Add(message);
-                    if (leagueOutputRadioButton.Checked) {
-                     //   outputList.Items.Add(message);
+                    leagueTableLstBox.Items.Add(message);
+                    //Automaticaly scroll if the 'Auto-Scroll' box is checked
+                    if (autoScrollChkBox.Checked) {
+                        leagueTableLstBox.SelectedIndex = leagueTableLstBox.Items.Count - 1;
+
                     }
                     break;
             }
-            
-          //  outputList.SelectedIndex = outputList.Items.Count - 1; //Select the newest item in the list (Auto-Scrolling)
+
+            //  outputList.SelectedIndex = outputList.Items.Count - 1; //Select the newest item in the list (Auto-Scrolling)
             clearButton.Enabled = true;
         }
 
@@ -308,8 +376,8 @@ namespace Hare_and_Tortoise_v2 {
         //Called once for each Animal on each round of a race 
         public void Move() {
             Random rnd = new Random();
-            form1.Log($"test", Form1.LogType.raceOutput);
             distanceTravelled += rnd.Next(minMoveSpeed, maxMoveSpeed + 1);
+            form1.Log($"Animal: {name}; Distance Travelled: {distanceTravelled}; Rest Chance: {restChance}", Form1.LogType.raceOutput);
         }
     }
 
