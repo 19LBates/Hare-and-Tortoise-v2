@@ -36,7 +36,7 @@ namespace Hare_and_Tortoise_v2 {
         private void startRaceButton_Click(object sender, EventArgs e) {
             List<Animal> animalWinnerList = Race(animalList);
             DisplayWinners(animalWinnerList);
-            
+
         }
 
         //When the 'Load File' button is clicked
@@ -109,6 +109,12 @@ namespace Hare_and_Tortoise_v2 {
             else {
                 clearButton.Enabled = false;
             }
+
+            //Display the text for the league table
+            leagueTableLstBox.Items.Clear();
+            foreach (string item in LeagueTableText(animalList)) {
+                leagueTableLstBox.Items.Add(item);
+            }
         }
 
         //When the 'Clear' button is clicked
@@ -127,6 +133,18 @@ namespace Hare_and_Tortoise_v2 {
             clearButton.Enabled = false;
         }
 
+        //Create a list containing the text for the League Table
+        //Shows how many races each animal has won
+        //Called when the 'League Table' radio box is checked
+        private static List<string> LeagueTableText(List<Animal> animalList) {
+            List<string> outputList = new List<string>();
+
+            foreach (Animal animal in animalList) {
+                outputList.Add($"{animal.name}: Won {animal.racesWon} races");
+            }
+
+            return outputList;
+        }
 
         //Try to load in a file
         //Returns a boolean depending on whether or not the function succeeded
@@ -161,8 +179,7 @@ namespace Hare_and_Tortoise_v2 {
                 ButtonsAfterFileLoad();
                 return true;
 
-            }
-            catch {
+            } catch {
                 streamReader.Close();
                 Log("Error opening/reading file", LogType.programLog);
                 return false;
@@ -179,7 +196,7 @@ namespace Hare_and_Tortoise_v2 {
             foreach (String line in lines) {
                 if (line == "") { break; } //Prevents errors when a semicolon is at the end of the file
                 String[] attributes = line.Split(","); //Separate animal attributes with a comma ","
-                Animal newAnimal = new Animal(attributes[0], Int32.Parse(attributes[1]), Int32.Parse(attributes[2]), Int32.Parse(attributes[3]), Int32.Parse(attributes[4]), Int32.Parse(attributes[5]), Int32.Parse(attributes[6]));
+                Animal newAnimal = new Animal(attributes[0], Int32.Parse(attributes[1]), Int32.Parse(attributes[2]), Int32.Parse(attributes[3]));
                 animalListToReturn.Add(newAnimal);
                 Log($"Added new animal: \"{attributes[0]}\"", LogType.programLog); //Debugging
             }
@@ -190,10 +207,12 @@ namespace Hare_and_Tortoise_v2 {
         //Carries out a single round of the Race
         //Calls upon each Animal's Move() function
         //Further decomposition of the Race() function
-        private static void Round(List<Animal> animalsToMove) {
+        private void Round(List<Animal> animalsToMove) {
             foreach (Animal animal in animalsToMove) {
                 animal.Move();
             }
+            //Format the raceOutput list box by adding a blank line after every round
+            Log("", LogType.raceOutput);
         }
 
         //Determine if any animal has surpassed the "finish line" of the race
@@ -228,9 +247,11 @@ namespace Hare_and_Tortoise_v2 {
 
             //Add any animal that has travelled as far as the maximum distance to the List of winners
             //This will usually just be the Animal from the previous loop, but also checks for draws
+            //For each animal that won, increment their racesWon variable by 1
             foreach (Animal animal in animalsToCheck) {
                 if (animal.distanceTravelled == maxDistance) {
                     animalWinnerList.Add(animal);
+                    animal.racesWon += 1;
                 }
             }
 
@@ -271,8 +292,8 @@ namespace Hare_and_Tortoise_v2 {
             Log($"There was a draw!", LogType.programLog);
             Log($"There was a draw!", LogType.raceOutput);
             foreach (Animal animal in winnerList) {
-                Log($"One of the winners is {animal.name}", LogType.programLog);
-                Log($"One of the winners is {animal.name}", LogType.raceOutput);
+                Log($"One of the joint winners is {animal.name}", LogType.programLog);
+                Log($"One of the joint winners is {animal.name}", LogType.raceOutput);
             }
         }
 
@@ -349,11 +370,10 @@ namespace Hare_and_Tortoise_v2 {
         public string name;
         private int minMoveSpeed;
         private int maxMoveSpeed;
-        private int baseRestChance;
-        private int restChance;
-        private int maxRestChance;
-        private int increaseRestChance;
+        private int endurance;
+        private int enduranceAfterRestMultiplier = 3;
         public int distanceTravelled;
+        public int racesWon;
 
         //Allows for accessing functions within the Form1{} class
         private Form1 form1 = Application.OpenForms[0] as Form1;
@@ -361,14 +381,11 @@ namespace Hare_and_Tortoise_v2 {
         //Constructor function
         //When this function is called, an object of type Animal is created
         //Public so that it can be called from anywhere
-        public Animal(string name, int minMoveSpeed, int maxMoveSpeed, int restChance = 0, int baseRestChance = 0, int maxRestChance = 100, int increaseRestChance = 0) {
+        public Animal(string name, int minMoveSpeed, int maxMoveSpeed, int endurance) {
             this.name = name;
             this.minMoveSpeed = minMoveSpeed;
             this.maxMoveSpeed = maxMoveSpeed;
-            this.baseRestChance = baseRestChance;
-            this.restChance = restChance;
-            this.maxRestChance = maxRestChance;
-            this.increaseRestChance = increaseRestChance;
+            this.endurance = endurance;
         }
 
         //Moves Animal
@@ -376,8 +393,20 @@ namespace Hare_and_Tortoise_v2 {
         //Called once for each Animal on each round of a race 
         public void Move() {
             Random rnd = new Random();
-            distanceTravelled += rnd.Next(minMoveSpeed, maxMoveSpeed + 1);
-            form1.Log($"Animal: {name}; Distance Travelled: {distanceTravelled}; Rest Chance: {restChance}", Form1.LogType.raceOutput);
+
+            //Animal does not have enough endurance to move this round
+            if (endurance <= 0) {
+                form1.Log($"{name}: {distanceTravelled}m travelled; RESTING", Form1.LogType.raceOutput);
+                //Set endurance to a multiple of the animal's minimum move speed
+                endurance = enduranceAfterRestMultiplier * minMoveSpeed;
+                return;
+            }
+
+            //Animal will move this round
+            int distanceToMove = rnd.Next(minMoveSpeed, maxMoveSpeed + 1);
+            distanceTravelled += distanceToMove;
+            endurance -= distanceToMove;
+            form1.Log($"{name}: {distanceTravelled}m travelled; {endurance} endurance", Form1.LogType.raceOutput);
         }
     }
 
