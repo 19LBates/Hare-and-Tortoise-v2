@@ -34,9 +34,12 @@ namespace Hare_and_Tortoise_v2 {
 
         //When the 'Start Races' button is clicked
         private void startRaceButton_Click(object sender, EventArgs e) {
-            List<Animal> animalWinnerList = Race(animalList);
-            DisplayWinners(animalWinnerList);
 
+            //Carry out (the value in the 'Simulate _ races' number box) races
+            for (int i = 0; i < numberRacesNumUD.Value; i++) {
+                List<Animal> animalWinnerList = Race(animalList);
+                DisplayWinners(animalWinnerList);
+            }
         }
 
         //When the 'Load File' button is clicked
