@@ -96,6 +96,7 @@
             raceDistanceNumUD.Name = "raceDistanceNumUD";
             raceDistanceNumUD.Size = new Size(72, 27);
             raceDistanceNumUD.TabIndex = 3;
+            raceDistanceNumUD.ThousandsSeparator = true;
             raceDistanceNumUD.Value = new decimal(new int[] { 1000, 0, 0, 0 });
             // 
             // staticRaceLabel1
@@ -251,7 +252,7 @@
             Controls.Add(startRaceButton);
             MinimumSize = new Size(1000, 592);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Hare and Tortoise v2";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)numberRacesNumUD).EndInit();
             ((System.ComponentModel.ISupportInitialize)raceDistanceNumUD).EndInit();
