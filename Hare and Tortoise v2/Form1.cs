@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace Hare_and_Tortoise_v2 { //TEST BETA
+namespace Hare_and_Tortoise_v2 { //TEST BETA;
     public partial class Form1 : Form {
 
         //A enum for the Log() function
@@ -14,8 +14,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA
 
         public LogType currentOutputLogType = LogType.programLog;
 
-        private List<Animal> animalList = new List<Animal>();
-
+        private List<Animal> animalList = [];
         //Lists to store the different types of logged messages
 
 
@@ -137,7 +136,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA
         //Shows how many races each animal has won
         //Called when the 'League Table' radio box is checked
         private void UpdateLeagueTable(List<Animal> animalList) {
-            List<string> outputList = new List<string>();
+            List<string> outputList = [];
 
             //Delete old league table
             leagueTableLstBox.Items.Clear();
@@ -153,7 +152,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA
         //Uses an out variable to return the List of Animals that have been created
         private bool TryLoadFile(string file, out List<Animal> animalListOut) {
             string fileExt = Path.GetExtension(file);
-            animalListOut = new List<Animal>();
+            animalListOut = [];
 
             //Prevent trying to load files that do not exist
             if (!File.Exists(file)) {
@@ -237,7 +236,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA
             int maxDistance = animalsToCheck[0].distanceTravelled;
             Animal maxAnimal = animalsToCheck[0];
 
-            List<Animal> animalWinnerList = new List<Animal>();
+            List<Animal> animalWinnerList = [];
 
             //Find the Animal that has travelled the greatest distance
             foreach (Animal animal in animalsToCheck) {
@@ -264,7 +263,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA
         //Returns a List of the Animals that won the race
         //Called when the 'Start Races' button is clicked
         private List<Animal> Race(List<Animal> animalList) {
-            List<Animal> animalWinnerList = new List<Animal>();
+            List<Animal> animalWinnerList = [];
 
             while (!RaceFinished(animalList)) {
                 Round(animalList);
