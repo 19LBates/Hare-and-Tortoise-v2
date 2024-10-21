@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace Hare_and_Tortoise_v2 {
+namespace Hare_and_Tortoise_v2 { //TEST BETA
     public partial class Form1 : Form {
 
         //A enum for the Log() function
