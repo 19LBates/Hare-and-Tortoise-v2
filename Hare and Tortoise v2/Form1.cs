@@ -111,10 +111,7 @@ namespace Hare_and_Tortoise_v2 {
             }
 
             //Display the text for the league table
-            leagueTableLstBox.Items.Clear();
-            foreach (string item in LeagueTableText(animalList)) {
-                leagueTableLstBox.Items.Add(item);
-            }
+            UpdateLeagueTable(animalList);
         }
 
         //When the 'Clear' button is clicked
@@ -136,14 +133,16 @@ namespace Hare_and_Tortoise_v2 {
         //Create a list containing the text for the League Table
         //Shows how many races each animal has won
         //Called when the 'League Table' radio box is checked
-        private static List<string> LeagueTableText(List<Animal> animalList) {
+        private void UpdateLeagueTable(List<Animal> animalList) {
             List<string> outputList = new List<string>();
 
-            foreach (Animal animal in animalList) {
-                outputList.Add($"{animal.name}: Won {animal.racesWon} races");
-            }
+            //Delete old league table
+            leagueTableLstBox.Items.Clear();
 
-            return outputList;
+            //Display how many races each animal has won
+            foreach (Animal animal in animalList) {
+                leagueTableLstBox.Items.Add($"{animal.name}: Won {animal.racesWon} races");
+            }
         }
 
         //Try to load in a file
@@ -274,6 +273,9 @@ namespace Hare_and_Tortoise_v2 {
             foreach (Animal animal in animalList) {
                 animal.distanceTravelled = 0;
             }
+
+            //Update league table
+            UpdateLeagueTable(animalList);
 
             return animalWinnerList;
         }
