@@ -164,7 +164,7 @@
             leagueOutputRadioButton.TabIndex = 6;
             leagueOutputRadioButton.Text = "League Table";
             leagueOutputRadioButton.UseVisualStyleBackColor = true;
-            leagueOutputRadioButton.CheckedChanged += leagueOutputRadioButton_CheckedChanged;
+            leagueOutputRadioButton.CheckedChanged += leagueTableRadioButton_CheckedChanged;
             // 
             // openFileDialog
             // 

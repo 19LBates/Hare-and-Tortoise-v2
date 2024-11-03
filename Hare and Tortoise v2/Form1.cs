@@ -94,8 +94,8 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
             }
         }
 
-        //When the Radio Button is changed to 'League Output'
-        private void leagueOutputRadioButton_CheckedChanged(object sender, EventArgs e) {
+        //When the Radio Button is changed to 'League Table'
+        private void leagueTableRadioButton_CheckedChanged(object sender, EventArgs e) {
             programLogLstBox.Visible = false;
             raceOutputLstBox.Visible = false;
             leagueTableLstBox.Visible = true;
@@ -301,9 +301,9 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
 
             animalWinnerList = DetermineWinners(animalList);
 
-            //Reset each animal's distance to 0 after the race
+            //Reset each animal after the race
             foreach (Animal animal in animalList) {
-                animal.distanceTravelled = 0;
+                animal.ResetAnimal();
             }
 
             //Update league table
@@ -405,6 +405,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
         private int minMoveSpeed;
         private int maxMoveSpeed;
         private int endurance;
+        private int initialEndurance;
         private const int enduranceAfterRestMultiplier = 3;
         public int distanceTravelled;
         public int racesWon;
@@ -420,6 +421,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
             this.minMoveSpeed = minMoveSpeed;
             this.maxMoveSpeed = maxMoveSpeed;
             this.endurance = endurance;
+            this.initialEndurance = endurance;
         }
 
         //Moves Animal
@@ -447,6 +449,11 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
             }
 
             form1.Log($"{name}: {distanceTravelled}m travelled; {endurance} endurance", Form1.LogType.raceOutput);
+        }
+
+        public void ResetAnimal() {
+            distanceTravelled = 0;
+            endurance = initialEndurance;
         }
     }
 
