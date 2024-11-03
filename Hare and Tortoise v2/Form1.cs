@@ -1,5 +1,3 @@
-using System.Windows.Forms;
-
 namespace Hare_and_Tortoise_v2 { //TEST BETA;
     public partial class Form1 : Form {
 
@@ -197,7 +195,39 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
             foreach (String line in lines) {
                 if (line == "") { break; } //Prevents errors when a semicolon is at the end of the file
                 String[] attributes = line.Split(","); //Separate animal attributes with a comma ","
-                Animal newAnimal = new Animal(attributes[0], Int32.Parse(attributes[1]), Int32.Parse(attributes[2]), Int32.Parse(attributes[3]));
+                string name = attributes[0];
+                int minMoveSpeed = Int32.Parse(attributes[1]);
+                int maxMoveSpeed = Int32.Parse(attributes[2]);
+                int endurance = Int32.Parse(attributes[3]);
+
+                //Check that all values are acceptable
+                if (string.IsNullOrEmpty(name)) {
+                    Log("Error: One or more animals has an empty name", LogType.programLog);
+                    throw new Exception("One or more animals has an empty name");
+                }
+
+                if (minMoveSpeed < 0) {
+                    Log("Error: One or more animals has a negative minimum speed", LogType.programLog);
+                    throw new Exception("One or more animals has a negative minimum speed");
+                }
+
+                if (maxMoveSpeed < 0) {
+                    Log("Error: One or more animals has a negative maximum speed", LogType.programLog);
+                    throw new Exception("One or more animals has a negative maximum speed");
+                }
+
+                if (endurance < 0) {
+                    Log("Error: One or more animals has a negative endurance", LogType.programLog);
+                    throw new Exception("One or more animals has a negative endurance");
+                }
+
+                if (minMoveSpeed > maxMoveSpeed) {
+                    Log("Error: One or more animals' minimum speed is greater than their maximum speed", LogType.programLog);
+                    throw new Exception("One or more animals' minimum speed is greater than their maximum speed");
+                }
+
+                //If all values are acceptable
+                Animal newAnimal = new Animal(name, minMoveSpeed, maxMoveSpeed, endurance);
                 animalListToReturn.Add(newAnimal);
                 Log($"Added new animal: \"{attributes[0]}\"", LogType.programLog); //Debugging
             }
@@ -375,7 +405,7 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
         private int minMoveSpeed;
         private int maxMoveSpeed;
         private int endurance;
-        private int enduranceAfterRestMultiplier = 3;
+        private const int enduranceAfterRestMultiplier = 3;
         public int distanceTravelled;
         public int racesWon;
 
@@ -410,6 +440,12 @@ namespace Hare_and_Tortoise_v2 { //TEST BETA;
             int distanceToMove = rnd.Next(minMoveSpeed, maxMoveSpeed + 1);
             distanceTravelled += distanceToMove;
             endurance -= distanceToMove;
+
+            //Set endurance to 0 if it is negative
+            if (endurance < 0) {
+                endurance = 0;
+            }
+
             form1.Log($"{name}: {distanceTravelled}m travelled; {endurance} endurance", Form1.LogType.raceOutput);
         }
     }
